@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Server Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+        }
+
+        .navbar {
+            background-color: #ffffff;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            color: #1a73e8;
+            margin-bottom: 1rem;
+        }
+
+        .button {
+            background-color: #1a73e8;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .button:hover {
+            background-color: #1557b0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            flex: 1;
+            margin: 0 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            color: #1a73e8;
+            font-weight: bold;
+        }
+
+        #statusMessage {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Web Server Dashboard</h1>
+        <a href="/books" class="button">View Books</a>
+    </nav>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="activeUsers">-</div>
+                <div>Active Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalRequests">-</div>
+                <div>Total Requests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="uptime">-</div>
+                <div>Uptime</div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>Server Status</h2>
+                <p>Currently running on port 8080</p>
+                <button class="button" onclick="checkStatus()">Check Status</button>
+                <div id="statusMessage"></div>
+            </div>
+            <div class="card">
+                <h2>API Endpoints</h2>
+                <p>Available endpoints:</p>
+                <ul style="margin: 1rem 0 1rem 1.5rem;">
+                    <li>GET /</li>
+                    <li>GET /book</li>
+                    <li>GET /books</li>
+                    <li>GET /api/book/:id</li>
+                </ul>
+                <a href="/books" class="button">View Books</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function checkStatus() {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.style.display = 'block';
+            
+            fetch('/')
+                .then(response => {
+                    if (response.ok) {
+                        statusMessage.textContent = 'Server is running normally!';
+                        statusMessage.className = 'success';
+                    } else {
+                        throw new Error('Server is not responding properly');
+                    }
+                })
+                .then(() => {
+                    updateServerStats();
+                })
+                .catch(error => {
+                    statusMessage.textContent = `Error: ${error.message}`;
+                    statusMessage.className = 'error';
+                });
+        }
+
+        function updateServerStats() {
+            // Simulating server stats update
+            document.getElementById('activeUsers').textContent = Math.floor(Math.random() * 200) + 100;
+            document.getElementById('totalRequests').textContent = (Math.floor(Math.random() * 5) + 1) + 'k';
+            document.getElementById('uptime').textContent = '99.' + (Math.floor(Math.random() * 9) + 1) + '%';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dashboard loaded');
+            updateServerStats();
+            setInterval(updateServerStats, 60000); // Update stats every minute
+        });
+    </script>
+</body>
+</html>
